@@ -29,25 +29,26 @@ def read_stock(filepath):
     return stock
 
 
-def display_items():
+def display_items(stock):
     """ Display available items with their unit prices """
 
+    print('='*58)
     print('|', "ID".ljust(2), '||', "Item".ljust(30), '||', "Unit Price (#)".rjust(14), '|')
-    print('='*54)
+    print('='*58)
     for item_no, item in enumerate(stock, 1):
         name, quantity, price = item.values()
         if quantity > 0:
             print('|', str(item_no).ljust(2),
                     '||', name.ljust(30),
                     '||', str(price).rjust(14), '|')
+    print('='*58)
     print()
 
 
-# stock = read_stock("data.csv")
+my_stock = read_stock("data.csv")
 
-# display_items()
+display_items(my_stock)
 
-# change_detail(stock, "price")
-# change_detail(stock, "quantity")
+add_items(my_stock)
 
-# display_items()
+display_items(my_stock)
