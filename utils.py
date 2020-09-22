@@ -61,3 +61,53 @@ def add_items(stock):
             progress = input("Do you want to add another item (y/n)? ").lower()
     print()
 
+
+def make_purchase(stock, purchase):
+    """ Computes goods purchased by the customer and displays receipt
+
+    stock: stock data; list of dicts
+    purchase: purchase details; dict of the form {id: quantity, ...}
+    """
+
+    total = 0
+    total_vat = 0
+    bonus = 0
+    unit_prices = set()  # Avoid unnecessary repetition
+
+    width = 81
+    disp_format = "| {:<30} || {:>8} || {:>3} || {:>10.2f} || {:>10.2f} |"
+
+    print('=' * width)
+    print("|%s|" % "RECEIPT".center(width - 2))
+    print('-' * width)
+    print("| {:^30} || {:^8} || {:^3} || {:^10} || {:^10} |".format(
+        "Item", "Unit (#)", "Qty", "VAT (#)", "Amount (#)"))
+    print('-' * width)
+    
+    for item_id, quantity in purchase.items():
+        item = stock[item_id - 1]
+        price = quantity * item["price"]
+        unit_prices.add(item["price"])
+        
+        # Compute VAT
+        if quantity < 5:
+            vat = price * 0.2
+            price *= 1.2
+        elif quantity > 10:
+            vat = price * 0.3
+            price *= 1.3
+        else:
+            vat = 0
+
+        print(disp_format.format(item["name"], item["price"], quantity, vat, price))
+
+        total_vat += vat
+        total += price
+
+    print('-' * width)
+    print(disp_format.format("Total", "", "", total_vat, total))
+    if len(purchase) > 10 and min(unit_prices) >= 100:
+        print('-' * width)
+        print("| %s|" % "Bonus Voucher: #800".ljust(width - 3))
+    print('=' * width)
+    print()
