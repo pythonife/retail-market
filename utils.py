@@ -112,6 +112,8 @@ def make_purchase(stock, purchase):
     print('=' * width)
     print()
 
+    return total
+
 
 def update_stock(stock, purchase):
     """ Update stock after a purchase
@@ -119,5 +121,37 @@ def update_stock(stock, purchase):
     stock: stock data; list of dicts
     purchase: purchase details; dict of the form {id: quantity, ...}
     """
+
     for item_id, quantity in purchase.items():
         stock[item_id - 1]["quantity"] -= quantity
+
+
+# Note:
+# The global scope of a function/class
+# is the scope of the module in which it's defined,
+# NOT neccessarily the module in which it's called.
+# This comes into play when a function/class is imported and used in another module
+# e.g the case of using `_gain` in the functions below
+
+def add_gain(amount):
+    """ Computes daily gain, using a global variable """
+    
+    global _gain  # `_gain` will be re-assigned to
+    _gain += amount
+
+
+def view_gain():
+    """ Display the day's Total Gain """
+
+    output = "| Today's Total Gain: {:.2f} |".format(_gain)
+    print('=' * len(output))
+    print(output)
+    print('=' * len(output))
+    print()
+
+
+# A leading underscore automatically makes a global name
+# hidden from a wildcard (*) import of this module
+# i.e any `from utils import *` in another module
+# but it's still visible to functions in this module.
+_gain = 0

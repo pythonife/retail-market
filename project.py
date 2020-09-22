@@ -1,6 +1,6 @@
 """ PYTHON IFE RETAIL MARKET PROJECT """
 
-from utils import *
+from utils import *  # excludes `_gain`
 
 def read_stock(filepath):
     """ Reads stock data from a csv file
@@ -42,8 +42,11 @@ def display_items(stock, admin=False):
         disp_format = "| {:>2} || {:<30} || {:>14} |"
         
     print('=' * width)
+    # The number of positional arguments to .format() can exceed
+    # the number of replacement fields in the string to be formatted
+    # but doing the opposite with automatic field-numbering will cause an error.
     print(disp_format.format("ID", "Item", "Unit Price (#)", "Quantity"))
-    print('=' * width)
+    print('-' * width)
     for item_no, item in enumerate(stock, 1):
         name, quantity, price = item.values()
         if admin or quantity > 0:
@@ -53,9 +56,11 @@ def display_items(stock, admin=False):
 
 
 my_stock = read_stock("data.csv")
-display_items(my_stock, True)
+display_items(my_stock)
 
-make_purchase(my_stock, {i: 100 for i in range(10, 21)})
+amount = make_purchase(my_stock, {i: 100 for i in range(10, 21)})
 update_stock(my_stock, {i: 121 for i in range(10, 21)})
+add_gain(amount)
+view_gain()
 
 display_items(my_stock, True)
