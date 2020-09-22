@@ -108,6 +108,16 @@ def make_purchase(stock, purchase):
     print(disp_format.format("Total", "", "", total_vat, total))
     if len(purchase) > 10 and min(unit_prices) >= 100:
         print('-' * width)
-        print("| %s|" % "Bonus Voucher: #800".ljust(width - 3))
+        print("| %s |" % "Bonus Voucher: #800".ljust(width - 4))
     print('=' * width)
     print()
+
+
+def update_stock(stock, purchase):
+    """ Update stock after a purchase
+
+    stock: stock data; list of dicts
+    purchase: purchase details; dict of the form {id: quantity, ...}
+    """
+    for item_id, quantity in purchase.items():
+        stock[item_id - 1]["quantity"] -= quantity

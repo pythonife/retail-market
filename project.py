@@ -31,26 +31,31 @@ def read_stock(filepath):
     return stock
 
 
-def display_items(stock):
-    """ Display available items with their unit prices """
+def display_items(stock, admin=False):
+    """ Display available items with their unit prices (and quantity for admin) """
 
-    disp_format = "| {:>2} || {:<30} || {:>14} |"
-    print('='*58)
-    print(disp_format.format("ID", "Item", "Unit Price (#)"))
-    print('='*58)
+    if admin:
+        width = 70
+        disp_format = "| {:>2} || {:<30} || {:>14} || {:>8} |"
+    else:
+        width = 58
+        disp_format = "| {:>2} || {:<30} || {:>14} |"
+        
+    print('=' * width)
+    print(disp_format.format("ID", "Item", "Unit Price (#)", "Quantity"))
+    print('=' * width)
     for item_no, item in enumerate(stock, 1):
         name, quantity, price = item.values()
-        if quantity > 0:
-            print(disp_format.format(item_no, name, price))
-
-    print('='*58)
+        if admin or quantity > 0:
+            print(disp_format.format(item_no, name, price, quantity))
+    print('=' * width)
     print()
 
 
 my_stock = read_stock("data.csv")
-
-display_items(my_stock)
+display_items(my_stock, True)
 
 make_purchase(my_stock, {i: 100 for i in range(10, 21)})
+update_stock(my_stock, {i: 121 for i in range(10, 21)})
 
-# display_items(my_stock)
+display_items(my_stock, True)
