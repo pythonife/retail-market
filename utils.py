@@ -1,7 +1,7 @@
 """ Utility functions for the Retail Market Project """
 
 def change_detail(stock, detail):
-    """ Function for admin to change ptice of items """
+    """ Function for admin to change details of items """
 
     max_id = len(stock)  # Instead of len() being computed on each loop.
     progress = 'y'
@@ -16,6 +16,7 @@ def change_detail(stock, detail):
                 value = int(value)
                 if value < 0:
                     print("Invalid %s!!" % detail)
+                    continue
         except ValueError:
             print("Invalid input")
             continue
@@ -131,7 +132,7 @@ def update_stock(stock, purchase):
 # is the scope of the module in which it's defined,
 # NOT neccessarily the module in which it's called.
 # This comes into play when a function/class is imported and used in another module
-# e.g the case of using `_gain` in the functions below
+# e.g the case of `_gain` in the functions below
 
 def add_gain(amount):
     """ Computes daily gain, using a global variable """
