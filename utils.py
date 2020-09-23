@@ -3,12 +3,12 @@
 def change_detail(stock, detail):
     """ Function for admin to change details of items """
 
-    max_id = len(stock)  # Instead of len() being computed on each loop.
+    max_id = len(stock)  # Instead of len() being computed on each iteration.
     progress = 'y'
     while progress == 'y':
         try:
-            item = int(input("Enter item ID: "))
-            if item < 1 or item > max_id:
+            item_id = int(input("Enter item ID: "))
+            if item_id < 1 or item_id > max_id:
                 print("Invalid Item ID")
                 continue
             value = input("Enter new %s: " % detail)
@@ -18,15 +18,18 @@ def change_detail(stock, detail):
                     print("Invalid %s!!" % detail)
                     continue
         except ValueError:
-            print("Invalid input")
+            print("Invalid input!!")
             continue
         else:
-            stock[item - 1][detail] = value
-            print("%s of '%s' successfully changed" % (detail, stock[item - 1]["name"]))
+            stock[item_id - 1][detail] = value
+            print("%s of '%s' successfully changed" % (detail, stock[item_id - 1]["name"]))
         finally:
             progress = input(
-                    "Do you want to change the %s of another item (y/n)? "
-                    % detail).lower()
+                "Do you want to change the %s of another item (y/n)? " % detail).lower()
+            while progress != 'y' and progress != 'n':
+                print("Invalid Input!!")
+                progress = input(
+                "Do you want to change the %s of another item (y/n)? " % detail).lower()
     print()
 
 
@@ -46,7 +49,7 @@ def add_items(stock):
                 print("Invalid price!!")
                 continue
         except ValueError:
-            print("Invalid input")
+            print("Invalid input!!")
             continue
         else:
             # Add if item doesn't already exists in stock
@@ -60,6 +63,9 @@ def add_items(stock):
                 print("'%s' successfully added." % name)
         finally:
             progress = input("Do you want to add another item (y/n)? ").lower()
+            while progress != 'y' and progress != 'n':
+                print("Invalid Input!!")
+                progress = input("Do you want to add another item (y/n)? ").lower()
     print()
 
 
