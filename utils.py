@@ -150,7 +150,7 @@ def add_gain(amount):
 def view_gain():
     """ Display the day's Total Gain """
 
-    output = "| Today's Total Gain: {:.2f} |".format(_gain)
+    output = f"| Today's Total Gain: {_gain:.2f} |"
     print('=' * len(output))
     print(output)
     print('=' * len(output))
@@ -162,3 +162,4 @@ def view_gain():
 # i.e any `from utils import *` in another module
 # but it's still visible to functions in this module.
 _gain = 0
+

@@ -142,12 +142,88 @@ def buy(stock):
 
 
 my_stock = read_stock("data.csv")
-display_items(my_stock)
 
-buy(my_stock)
-# amount = make_purchase(my_stock, {i: 100 for i in range(10, 21)})
-# update_stock(my_stock, {i: 121 for i in range(10, 21)})
-# add_gain(amount)
-view_gain()
+end_of_day = False
+while not end_of_day:
+    username = input("Please, Enter Your Name: ")
+    print()
+    
+    if username.lower() == "admin":
+        while True:
+            print("1. View stock\n"
+                "2. Add items\n"
+                "3. Change item detail\n"
+                "4. View today's gain\n"
+                "5. Exit\n"
+                "6. End the day\n")
 
-display_items(my_stock, True)
+            try:
+                choice = int(input("Choose an option: "))
+                print()
+            except ValueError:
+                print("Invalid Input!!\n")
+                continue
+
+            if choice == 1:
+                display_items(my_stock, admin=True)
+            elif choice == 2:
+                add_items(my_stock)
+            elif choice == 3:
+                while True:
+                    print("1. Item Name\n"
+                        "2. Item Price\n"
+                        "3. Item Quantity\n"
+                        "4. Back\n")
+                    try:
+                        choice = int(input("Choose an option: "))
+                        print()
+                    except ValueError:
+                        print("Invalid Input!!\n")
+                        continue
+
+                    if choice == 1:
+                        change_detail(my_stock, "name")
+                    elif choice == 2:
+                        change_detail(my_stock, "price")
+                    elif choice == 3:
+                        change_detail(my_stock, "quantity")
+                    elif choice == 4:
+                        break
+                    else:
+                        print("Invalid Option!!\n")
+            elif choice == 4:
+                view_gain()
+            elif choice == 5:
+                break
+            elif choice == 6:
+                end_of_day = True
+                break
+            else:
+                print("Invalid Option!!\n")
+
+    else:  # Any other name is taken as a customer's.
+        print(f"Welcome, {username}!\n")
+
+        while True:
+            print("1. View item list\n"
+                    "2. Purchase Goods\n"
+                    "3. Exit\n")
+
+            try:
+                choice = int(input("Choose an option: "))
+                print()
+            except ValueError:
+                print("Invalid Input!!\n")
+                continue
+
+            if choice == 1:
+                display_items(my_stock)
+            elif choice == 2:
+                buy(my_stock)
+            elif choice == 3:
+                print(f"Have a good day, {username}!\n"
+                        "Thanks for shopping with us.\n")
+                break
+            else:
+                print("Invalid Option!!\n")
+
