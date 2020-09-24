@@ -1,4 +1,8 @@
-""" PYTHON IFE RETAIL MARKET PROJECT """
+""" PYTHON IFE RETAIL MARKET PROJECT
+    
+    Author: AnonymouX47
+    Date Started: Mon Sep 21, 2020
+"""
 
 from utils import *  # excludes `_gain`
 
