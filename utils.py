@@ -21,15 +21,16 @@ def change_detail(stock, detail):
             print("Invalid input!!")
             continue
         else:
-            stock[item_id - 1][detail] = value
-            print("%s of '%s' successfully changed" % (detail, stock[item_id - 1]["name"]))
+            item = stock[item_id - 1]
+            item[detail] = value
+            print(f"{detail} of '{item['name']}' successfully changed")
         finally:
             progress = input(
-                "Do you want to change the %s of another item (y/n)? " % detail).lower()
+                f"Do you want to change the {detail} of another item (y/n)? ").lower()
             while progress != 'y' and progress != 'n':
                 print("Invalid Input!!")
                 progress = input(
-                "Do you want to change the %s of another item (y/n)? " % detail).lower()
+                f"Do you want to change the {detail} of another item (y/n)? ").lower()
     print()
 
 
