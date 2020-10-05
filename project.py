@@ -44,7 +44,7 @@ def read_stock(filepath):
     stock_file.close()
 
     # The same can be achieved with a single statement using *comprehensions*:
-    # stock = [ {"name": row[0], "quantity": int(row[1]), "price": int(row[2])}
+    # stock = [ {"name": row[0], "price": int(row[2]), "quantity": int(row[1])}
     #         for row in ( [cell.strip("'") for cell in line.strip('\n').split(', ')]
     #         for line in open(filepath, 'r') ) ]
     #
