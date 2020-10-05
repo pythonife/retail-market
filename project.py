@@ -1,7 +1,17 @@
 """ PYTHON IFE RETAIL MARKET PROJECT
     
     Author: AnonymouX47
-    Date Started: Mon Sep 21, 2020
+    Date: Mon Sep 21, 2020
+
+    A NOTE TO YOU:
+
+    Good NAMES tell WHAT,
+    Good CODE tell HOW,
+    Good COMMENTS tell WHY, when neccessary.
+
+    Self-descriptive names are good, not too long
+    but just enough to tell what kind of value a variable "holds"
+    or what a function does, etc.
 """
 
 # PLEASE NOTE: `implicit line continuation` and `implicit string concatenation`
