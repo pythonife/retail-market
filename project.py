@@ -4,6 +4,10 @@
     Date Started: Mon Sep 21, 2020
 """
 
+# PLEASE NOTE: `implicit line continuation` and `implicit string concatenation`
+# are applied in a number of places in this module.
+# You're adviced to find out about these if you don't already know.
+
 from utils import *  # excludes `_gain`
 
 def read_stock(filepath):
@@ -18,19 +22,23 @@ def read_stock(filepath):
     stock = []  # List to contain stock data
 
     for line in stock_file:
-        line = line.strip('\n').split(', ')
-        row = []
-        for cell in line:
-            row.append(cell.strip("'"))
-        row[1:] = map(int, row[1:])
-        stock.append({"name": row[0], "quantity": row[1], "price": row[2]})
+        row = [cell.strip("'") for cell in line.strip('\n').split(', ')]
+
+        # The line above is equivalent to (but way better than) the following:
+        # line = line.strip('\n').split(', ')
+        # row = []
+        # for cell in line:
+        #     row.append(cell.strip("'"))
+
+        stock.append({"name": row[0], "price": int(row[2]), "quantity": int(row[1])})
     stock_file.close()
 
-    # The same can also be achieved with a single statement using list comprehensions.
-
+    # The same can be achieved with a single statement using *comprehensions*:
     # stock = [ {"name": row[0], "quantity": int(row[1]), "price": int(row[2])}
-    #         for row in [ [cell.strip("'") for cell in line.strip().split(', ')]
-    #         for line in open(filepath, 'r')] ]
+    #         for row in ( [cell.strip("'") for cell in line.strip('\n').split(', ')]
+    #         for line in open(filepath, 'r') ) ]
+    #
+    # *Implicit line continuation* applies above
 
     return stock
 
@@ -52,9 +60,8 @@ def display_items(stock, admin=False):
     print(disp_format.format("ID", "Item", "Unit Price (#)", "Quantity"))
     print('-' * width)
     for item_id, item in enumerate(stock, 1):
-        name, quantity, price = item.values()
-        if admin or quantity > 0:
-            print(disp_format.format(item_id, name, price, quantity))
+        if admin or item["quantity"] > 0:
+            print(disp_format.format(item_id, *item.values()))
     print('=' * width)
     print()
 
@@ -67,29 +74,29 @@ def buy(stock):
         display_items(stock)
     else:
         print()
+
     purchase = {}  # to contain purchase details; {id: qty, ...}
     max_id = len(stock)  # Instead of len() being computed on each iteration.
     progress = 'y'
+
     while progress == 'y':
         try:
             item_id = int(input("Enter item ID: "))
 
-            # An IndexError can never occour at the last expression here
+            # An IndexError can never occur at the last expression here
             # by virtue of the evaluation order of boolean operator `or`.
-            if item_id < 1 or item_id > max_id or stock[item_id - 1]["quantity"] == 0:
+            if item_id < 1 or item_id > max_id or not stock[item_id - 1]["quantity"]:
+                # `not x` is a better replacement for `x == 0`.
                 print("Invalid Item ID")
                 continue
 
             max_qty = stock[item_id - 1]["quantity"]
-            qty_question = "Enter item Quantity (1 - {}): ".format(max_qty)
+            qty_question = f"Enter item Quantity (1 - {max_qty}): "
             quantity = int(input(qty_question))
-
-            if quantity < 1:
+            while quantity < 1:
+                print("Invalid Quantity!!")
                 quantity = int(input(qty_question))
-                if quantity > max_qty or quantity < 1:
-                    print("Invalid Quantity!!")
-                    continue
-            elif quantity > max_qty:
+            if quantity > max_qty:
                 print("Sorry, the requested quantity is currently unavailable.\n"
                         "1. Skip item\n"
                         "2. Request all available quantity\n"
@@ -113,17 +120,16 @@ def buy(stock):
             continue
         else:
             if item_id in purchase:
-                print(
-                    "This item '{}' has been selected ealier with quantity '{}'".format(
+                print("This item '{}' has been selected with quantity '{}'".format(
                     stock[item_id]["name"], purchase[item_id]))
                 print("1. Change to new quantity\n"
-                        "2. Leave with previous quantity\n")
+                        "2. Leave as previous quantity\n")
 
                 choice = int(input("Please, Choose an option: "))
                 if choice == 1:
                     purchase[item_id] = quantity
                 elif choice == 2:
-                    pass
+                    pass  # This is an example of a proper use of `pass`.
                 else:
                     print("Wrong input!!\nItem quantity left unchanged")
             else:
@@ -135,8 +141,9 @@ def buy(stock):
                 progress = input("Do you want to buy another item (y/n)? ").lower()
     print()
 
-    # An empty iterable (len() == 0) has a boolean value `False`, otherwise, `True`.
-    if purchase:
+    # An empty iterable (i.e len(<iterable>) == 0) has a boolean value `False`,
+    # otherwise, `True`.
+    if purchase:  # Make sure the customer requested for at least one item.
         total_amount = make_purchase(stock, purchase)
         update_stock(stock, purchase)
         add_gain(total_amount)
