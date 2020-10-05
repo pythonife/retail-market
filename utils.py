@@ -41,27 +41,27 @@ def add_items(stock):
     while progress == 'y':
         try:
             name = input("Enter Item Name: ")
+            price = int(input("Enter Unit Price of item: "))
+            if price < 0:
+                print("Invalid price!!")
+                continue
             quantity = int(input("Enter item Quantity: "))
             if quantity < 0:
                 print("Invalid quantity!!")
-                continue
-            price = int(input("Enter Unit Price of item: "))
-            if price <= 0:
-                print("Invalid price!!")
                 continue
         except ValueError:
             print("Invalid input!!")
             continue
         else:
-            # Add if item doesn't already exists in stock
+            # Add only if item doesn't already exists in stock
             for item in stock:
-                if item["name"].lower() == name.lower():
+                if item["name"].casefold() == name.casefold():
                     print("'%s' already exists in stock!" % name)
                     break
             else:
                 # No matching item in stock
-                stock.append({"name": name, "quantity": quantity, "price": price})
-                print("'%s' successfully added." % name)
+                stock.append({"name": name, "price": price, "quantity": quantity})
+                print("New item '%s' successfully added." % name)
         finally:
             progress = input("Do you want to add another item (y/n)? ").lower()
             while progress != 'y' and progress != 'n':
@@ -79,44 +79,54 @@ def make_purchase(stock, purchase):
 
     total = 0
     total_vat = 0
-    bonus = 0
-    unit_prices = set()  # Avoid unnecessary repetition
+    unit_prices = set()  # To avoid unnecessary repetition
 
     width = 81
     disp_format = "| {:<30} || {:>8} || {:>3} || {:>10.2f} || {:>10.2f} |"
-
     print('=' * width)
+
     print("|%s|" % "RECEIPT".center(width - 2))
+    # The above can be acheived thus, using the new style:
+    # By using replacement fields within format_spec or another replacement field.
+    # print(f"|{'RECEIPT':^{width-2}}|")
+    # OR
+    # print("|{0:^{1}}|".format("RECEIPT", width-2))
+    # This last one is probably the easiest to read
+    #
+    # The `-2` is because of the two '|' (pipe) characters in the string.
+
     print('-' * width)
     print("| {:^30} || {:^8} || {:^3} || {:^10} || {:^10} |".format(
         "Item", "Unit (#)", "Qty", "VAT (#)", "Amount (#)"))
+    # *Implicit line continuation* applies above
     print('-' * width)
     
     for item_id, quantity in purchase.items():
         item = stock[item_id - 1]
-        price = quantity * item["price"]
-        unit_prices.add(item["price"])
+        unit_price = item["price"]
+        amount = quantity * unit_price
+        unit_prices.add(unit_price)
         
-        # Compute VAT
         if quantity < 5:
-            vat = price * 0.2
-            price *= 1.2
+            vat = amount * 0.2
+            amount *= 1.2  # 100% + 20%
         elif quantity > 10:
-            vat = price * 0.3
-            price *= 1.3
+            vat = amount * 0.3
+            amount *= 1.3  # 100% + 30%
         else:
             vat = 0
 
-        print(disp_format.format(item["name"], item["price"], quantity, vat, price))
-
+        print(disp_format.format(item["name"], unit_price, quantity, vat, amount))
         total_vat += vat
-        total += price
+        total += amount
 
     print('-' * width)
     print(disp_format.format("Total", "", "", total_vat, total))
     if len(purchase) > 10 and min(unit_prices) >= 100:
         print('-' * width)
         print("| %s |" % "Bonus Voucher: #800".ljust(width - 4))
+        # The above can also be acheived as done for "RECEIPT" above.
+        # The `-4` is because of the two '| ' (pipe and space) in the string.
     print('=' * width)
     print()
 
